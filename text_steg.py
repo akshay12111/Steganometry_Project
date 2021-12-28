@@ -1,9 +1,24 @@
 from PIL import Image
 FLAG = '00000000'
 
-def get_binary_message(msg):
-    msg_list = [ bin(ord(ch))[2:].rjust(8,'0') for ch in msg]
+def msg_to_binary(msg):
+    msg_list = [bin(ord(ch))[2:].rjust(8,'0') for ch in msg]
     return msg_list
+
+def pixel_to_bin(pixel):
+    r,g,b = pixel 
+    mask1 = (1 << 1) - 1
+    mask2 = (1 << 2) - 1
+    
+    half_byte = ''
+    half_byte += ("{0:b}".format(mask2 & r).rjust(2,'0'))
+    half_byte += (str(mask1 & g))
+    half_byte += (str(mask1 & b))
+    return half_byte
+
+def pair(iterable):
+    i = iter(iterable)
+    return zip(i,i)
 
 def encode_data(pixel,half_byte):
     r,g,b = pixel
@@ -20,85 +35,59 @@ def encode_data(pixel,half_byte):
     b += int(half_byte[3])
     
     return (r,g,b)
-    pass
 
-def put_data(original_pixels,data_stream):
-    counter = 0
-    for data in data_stream:
-        p1 = data[0:4]
-        p2 = data[4:8]
-        # print("p1  ",p1)
-        # print("p2  ",p2)
-        # print("orig ",original_pixels[counter])
-        original_pixels[counter] = encode_data(original_pixels[counter],p1)
-        # print("mod ",original_pixels[counter])
-        counter += 1
-        # print("orig ",original_pixels[counter])
-        original_pixels[counter] = encode_data(original_pixels[counter],p2)
-        # print("mod ",original_pixels[counter])
-        counter += 1
+def split_byte(byte_value):
+    return [byte_value[0:4],byte_value[4:8]]
+
+def put_data(original_pixels,byte_stream):
+    for index,byte in enumerate(byte_stream):
+        idx = index*2
+        data1,data2 = split_byte(byte)
+        byte_list = [encode_data(original_pixels[idx],data1),
+                     encode_data(original_pixels[idx+1],data2)]
+        
+        original_pixels[(idx):(idx+2)] = byte_list
     
-    # for i in range(20):
-        # print(original_pixels[i])
-    # print("--------END OF MOD---------")
     return original_pixels
-    # list_iter = iter(original_pixels)
-    # pixel_pair = zip(list_iter,list_iter)
-    
-    # remaining_bytes = len(data_stream)
-    # counter = 0
-    # for pixel1,pixel2 in pixel_pair:
-    #     if(remaining_bytes == 0):
-    #         break
-    #     original_pixels[counter] = 
-    pass
 
 def get_data(pixels):
-    # for i in range(20):
-        # print(pixels[i])
-    # print("--------END OF NEW---------")
-    buffer1 = []
-    buffer2 = []
-    counter = 0
     flag_counter = 0
-    mask1 = (1 << 1) - 1
-    mask2 = (1 << 2) - 1
-    for pixel in pixels:
-        if(counter%2==0):
-            s = ''.join(buffer1+buffer2)
-            if(s == '00000000'):
-                if(flag_counter == 1):
-                    break
-                flag_counter += 1
-            if(s != ''):
-                t = chr(int(s,2))
-                print(t,end="")
-            buffer1 = []
-            buffer2 = []
-            r,g,b = pixel
-            buffer1.append("{0:b}".format(mask2 & r).rjust(2,'0'))
-            buffer1.append(str(mask1 & g))
-            buffer1.append(str(mask1 & b))
+    for pix1,pix2 in pair(pixels):
+        byte = pixel_to_bin(pix1) + pixel_to_bin(pix2)
+        if(byte == FLAG):
+            if(flag_counter == 1):
+                break
+            flag_counter += 1
+            continue
         else:
-            r,g,b = pixel
-            buffer2.append("{0:b}".format(mask2 & r).rjust(2,'0'))
-            buffer2.append(str(mask1 & g))
-            buffer2.append(str(mask1 & b))
-        counter+=1
-        # if(counter == 50):
-        #     break
+            print(chr(int(byte,2)),end="")
 
 
-def main():
-    original_image = Image.open("catalina.jpg")
+def hide_data():
+    original_image = Image.open("sierra.jpg")
     original_pixel_data = list(original_image.getdata())
-    # for i in range(20):
-        # print(original_pixel_data[i])
-    # print("--------END OF ORIGINAL---------")
-        
-    message = 'Hello there this is my secret message'
-    raw_msg_list = [FLAG] + get_binary_message(message) + [FLAG]
-    # print(raw_msg_list)
+
+    message = '''
+Cicada 3301 is a nickname given to an alleged enigmatic organization that posted three sets of puzzles online between 2012 and 2014.
+The first Internet puzzle started on January 4, 2012, on 4chan and ran for nearly a month. A second round began one year later on 
+January 4, 2013, and then a third round following the confirmation of a fresh clue posted on Twitter on January 4, 2014. The third 
+puzzle has yet to be solved. The stated intent was to recruit "intelligent individuals" by presenting a series of puzzles which were
+to be solved. No new puzzles were published on January 4, 2015. However, a new clue was posted on Twitter on January 5, 2016.
+
+    Cicada 3301 posted their last verified PGP-signed message in April 2017, denying the validity of any unsigned puzzle.
+Unfortunately, the actually important message was harder to get.
+As with the previous two years, the image included text hidden with steganography, a technique which lets users bury information in seemingly innocuous files. To get the information out required me to use a program called OutGuess. To install OutGuess, I need to compile the program from source. To do that, I need to install Xcode, the Mac OS X developer tools, create a new command line project based on the source code I downloaded, reconfigure the program for Mac, deal with any dependency issues, build it, and then run it from the terminal.
+What I actually do is spend the better part of an hour clicking around in Xcode, desperately trying to find a magic button to click which will make everything work without requiring me to learn how to code in an afternoon. There is no such button. This may be harder than I thought.
+Out of desperation, I turn to the community. Apparently I'm a few days behind the curve; they've already extracted the text and solved the puzzle. As I look at the solution, my hope begins to melt. It really is mind-bogglingly obtuse.
+
+Solution
+The text which can be extracted from the image is split into three parts. The third is just a signature, proof that the image really does come from Cicada and that it hasn't been tampered with. But above it is the next step of the puzzle.
+The first part reads like a poem: "The work of a private man/ who wished to transcend,/ He trusted himself, / to produce from within." That's followed by a series of numbers, separated by colons: "1:2:3:1/3:3:13:5/45:5:2:3," and so on, capped by the word ".onion". That last bit means that the solution, when found, will be the url to another website on Tor – following the pattern of the previous years.
+So how is it solved? The numbers give a clue: the code probably involves a book. That format is a relatively well-known way of using a book as a key to a code. The first digit is the paragraph, the second is the sentence, the third is the word, and the fourth is the letter. But which book?
+The answer is contained in the poem. Sort of. It's like the most frustrating cryptic crossword ever, with no conventions, no help as to length, and no way of checking whether you've got the right answer beyond seeing whether the url works.
+'''
+
+    raw_msg_list = [FLAG] + msg_to_binary(message) + [FLAG]
     
     result = put_data(original_pixel_data, raw_msg_list)
     new_img = Image.new(original_image.mode,original_image.size)
@@ -106,7 +95,7 @@ def main():
     new_img.save('test.png')
     pass
 
-def main2():
+def extract_data():
     image = Image.open('test.png')
     original_pixel_data = list(image.getdata())
     get_data(original_pixel_data)
@@ -115,7 +104,7 @@ def main2():
 
 if __name__ == '__main__':
     #to encode
-    main()
+    hide_data()
     
     #to decode
-    main2()
+    extract_data()
