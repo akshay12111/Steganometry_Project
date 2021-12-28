@@ -51,7 +51,10 @@ def decode_message(pixels):
     return data
 
 def HideData(image_path='sierra.jpg',message=""):
-    original_image = Image.open(image_path)
+    try:
+        original_image = Image.open(image_path)
+    except:
+        print("Unable to open another image")
     original_pixel_data = list(original_image.getdata())
     msg_bytes = [FLAG] + msg_to_binary(message) + [FLAG]
     
@@ -69,7 +72,10 @@ def HideData(image_path='sierra.jpg',message=""):
     pass
 
 def ExtractData(image_path='media/test.png'):
-    image = Image.open(image_path)
+    try:
+        image = Image.open(image_path)
+    except:
+        print("Error:File Not Found")
     image_pixel_data = list(image.getdata())
     message = decode_message(image_pixel_data)
 
