@@ -16,7 +16,7 @@ Out of desperation, I turn to the community. Apparently I'm a few days behind th
 
 Solution
 The text which can be extracted from the image is split into three parts. The third is just a signature, proof that the image really does come from Cicada and that it hasn't been tampered with. But above it is the next step of the puzzle.
-The first part reads like a poem: "The work of a private man/ who wished to transcend,/ He trusted himself, / to produce from within." That's followed by a series of numbers, separated by colons: "1:2:3:1/3:3:13:5/45:5:2:3," and so on, capped by the word ".onion". That last bit means that the solution, when found, will be the url to another website on Tor – following the pattern of the previous years.
+The first part reads like a poem: "The work of a private man/ who wished to transcend,/ He trusted himself, / to produce from within." That's followed by a series of numbers, separated by colons: "1:2:3:1/3:3:13:5/45:5:2:3," and so on, capped by the word ".onion". That last bit means that the solution, when found, will be the url to another website on Tor following the pattern of the previous years.
 So how is it solved? The numbers give a clue: the code probably involves a book. That format is a relatively well-known way of using a book as a key to a code. The first digit is the paragraph, the second is the sentence, the third is the word, and the fourth is the letter. But which book?
 The answer is contained in the poem. Sort of. It's like the most frustrating cryptic crossword ever, with no conventions, no help as to length, and no way of checking whether you've got the right answer beyond seeing whether the url works.
 '''
@@ -35,6 +35,12 @@ def pixel_to_bin(pixel):
     half_byte += (str(mask1 & g))
     half_byte += (str(mask1 & b))
     return half_byte
+
+#1byte requires 2 pixels
+def is_encodable(pixels,data):
+    num_pixel = len(pixels)
+    num_bytes = len(data)
+    return (num_pixel >= (2*num_bytes))
 
 def pair(iterable):
     i = iter(iterable)
@@ -82,21 +88,21 @@ def decode_message(pixels):
             continue
         else:
             data += chr(int(byte,2))
-            # print(chr(int(byte,2)),end="")
     return data
 
 def hide_data():
     original_image = Image.open("sierra.jpg")
     original_pixel_data = list(original_image.getdata())
-
-
-
     msg_bytes = [FLAG] + msg_to_binary(message) + [FLAG]
     
-    encoded_msg_bytes = encode_message(original_pixel_data, msg_bytes)
-    new_img = Image.new(original_image.mode,original_image.size)
-    new_img.putdata(tuple(encoded_msg_bytes))
-    new_img.save('test.png')
+    if is_encodable(original_pixel_data,msg_bytes):    
+        encoded_msg_bytes = encode_message(original_pixel_data, msg_bytes)
+        new_img = Image.new(original_image.mode,original_image.size)
+        new_img.putdata(tuple(encoded_msg_bytes))
+        new_img.save('test.png')
+    else:
+        print("Can not hide data in this image")
+        exit(0)
     pass
 
 def extract_data():
@@ -110,6 +116,6 @@ def extract_data():
 if __name__ == '__main__':
     #to encode
     hide_data()
-    
+
     #to decode
     extract_data()
