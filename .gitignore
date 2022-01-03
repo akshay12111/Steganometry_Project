@@ -1,3 +1,4 @@
 *.txt
 GUI_TEST
 .vscode
+img_steg.py
