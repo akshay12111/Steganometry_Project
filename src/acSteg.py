@@ -54,11 +54,11 @@ def HideData(image_path='sierra.jpg',message=""):
     try:
         original_image = Image.open(image_path)
     except:
-        print("Unable to open another image")
+        print("Unable to open image")
     original_pixel_data = list(original_image.getdata())
     msg_bytes = [FLAG] + msg_to_binary(message) + [FLAG]
     
-    if is_encodable(original_pixel_data,msg_bytes):    
+    if is_encodable(original_pixel_data,msg_bytes):
         encoded_msg_bytes = encode_message(original_pixel_data, msg_bytes)
         
         new_img = Image.new(original_image.mode,original_image.size)
