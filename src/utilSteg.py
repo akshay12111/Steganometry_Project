@@ -19,4 +19,11 @@ def split_byte(byte_value):
     return [byte_value[0:4],byte_value[4:8]]
 
 def get_pixel_MSB(pix1,pix2):
-    pass
+    pixel_data = []
+    
+    for component1,component2 in zip(pix1,pix2):
+        img_component_val = bin(component1)[2:].rjust(8,'0')[-2:] + bin(component2)[2:].rjust(8,'0')[-2:]
+        img_component_val = img_component_val.ljust(8,'0')
+        pixel_data.append(int(img_component_val,2))
+    
+    return tuple(pixel_data)

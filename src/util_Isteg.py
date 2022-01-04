@@ -1,6 +1,5 @@
 #Both height and width will use 3 pixels 222222111
 def encode_to_pixel(pixel,bin_pixel_data):
-    print(len(pixel))
     r,g,b = pixel
     shift = len(bin_pixel_data)//3
     
@@ -24,6 +23,7 @@ def encode_to_pixel(pixel,bin_pixel_data):
     return (r,g,b)
 
 def add_dimensions(original_img_pixels,offset,bin_width,bin_height):
+    # print("in dim---------------------------------")
     original_img_pixels[offset]   = encode_to_pixel(original_img_pixels[offset],bin_width[0:6])
     original_img_pixels[offset+1] = encode_to_pixel(original_img_pixels[offset+1],bin_width[6:12])
     original_img_pixels[offset+2] = encode_to_pixel(original_img_pixels[offset+2],bin_width[12:15])
@@ -47,7 +47,6 @@ def add_data_size(original_img_pixels,offset,bin_payload_size):
 
 def add_header(original_img_pixels,payload_dimensions,
                num_payload_pixels,num_flag_pixels=2):
-    
     #FLAG-> All even
     for i in range(num_flag_pixels):
         pixel_data = []
@@ -57,7 +56,6 @@ def add_header(original_img_pixels,payload_dimensions,
             else:
                 pixel_data.append(component+1)
         original_img_pixels[i] = tuple(pixel_data)
-        
     pixel_offset = 2
     payload_width,payload_height = payload_dimensions
     
@@ -114,8 +112,40 @@ def check_FLAG(img_pixel_data,num_flag_pixels=2):
     return True
 
 def get_dimensions(img_pixel_data,width_pixels,height_pixels,offset):
-    pass
+    bin_width  = ''
+    bin_height = ''
+        
+    for i in range(width_pixels):
+        for component in img_pixel_data[offset]:
+            if(i==width_pixels-1):
+                bin_val = bin(component)[2:].rjust(8,'0')[-1:]
+            else:
+                bin_val = bin(component)[2:].rjust(8,'0')[-2:]
+            bin_width += bin_val
+        offset += 1
+    
+    for i in range(height_pixels):
+        for component in img_pixel_data[offset]:
+            if(i==height_pixels-1):
+                bin_val = bin(component)[2:].rjust(8,'0')[-1:]
+            else:
+                bin_val = bin(component)[2:].rjust(8,'0')[-2:]
+            bin_height += bin_val
+        offset += 1
+    
+    return (int(bin_width,2),int(bin_height,2)),offset
+    
 
 def get_size(img_pixel_data,img_size_pixels,offset):
-    pass
+    bin_size = ''
+    for i in range(img_size_pixels):
+        for component in img_pixel_data[offset]:
+            if(i==img_size_pixels-1):
+                bin_val = bin(component)[2:].rjust(8,'0')[-1:]
+            else:
+                bin_val = bin(component)[2:].rjust(8,'0')[-2:]
+            bin_size += bin_val
+        offset += 1
+        
+    return int(bin_size,2),offset
                 
