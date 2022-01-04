@@ -19,24 +19,38 @@ def encode_data(original_pixel,img_pixel):
     return (r,g,b)
 
 def img_bits(pixel):
-    first_two = '11000000'
-    next_two  = '00110000'
-    
-    val1 = int(first_two,2)
-    val2 = int(next_two,2)
-    
     r,g,b = pixel
+    r = bin(r)[2:].rjust(8,'0')
+    g = bin(g)[2:].rjust(8,'0')
+    b = bin(b)[2:].rjust(8,'0')
     
-    r1 = r & val1
-    r2 = r & val2
+    r1 = int(r[0:2],2)
+    r2 = int(r[2:4],2)
     
-    g1 = g & val1
-    g2 = g & val2
+    g1 = int(g[0:2],2)
+    g2 = int(g[2:4],2)
     
-    b1 = b & val1
-    b2 = b & val2
+    b1 = int(b[0:2],2)
+    b2 = int(b[2:4],2)
     
     return ((r1,g1,b1),(r2,g2,b2))
+    # first_two = '11000000'
+    # next_two  = '00110000'
+    
+    # val1 = int(first_two,2)
+    # val2 = int(next_two,2)
+    
+    
+    # r1 = r & val1
+    # r2 = r & val2
+    
+    # g1 = g & val1
+    # g2 = g & val2
+    
+    # b1 = b & val1
+    # b2 = b & val2
+    
+    # return ((r1,g1,b1),(r2,g2,b2))
     pass
 
 def put_data(original_pixels,img_pixel):
@@ -116,10 +130,10 @@ def get_data(pixel_data):
     pass
 
 def main():
-    original_image = Image.open("sierra.jpg")
+    original_image = Image.open("media/sierra.jpg")
     original_pixel_data = list(original_image.getdata())
     
-    img = Image.open("mac.jpg")
+    img = Image.open("media/mac.jpg")
     img_pixel_data = list(img.getdata())
     
     result = put_data(original_pixel_data,img_pixel_data)
@@ -131,11 +145,12 @@ def main():
 def main2():
     image = Image.open('test2.png')
     pixel_data = list(image.getdata())
+    # print(pixel_data[0],pixel_data[1],pixel_data[-2],pixel_data[-1])
     data = get_data(pixel_data)
     
     # for i in range(100):
         # print(data)
-    print(len(data))
+    # print(len(data))
     
     # new_img = Image.new('RGB',(5000,3124))
     new_img = Image.new('RGB',(1920,1080))

@@ -36,19 +36,17 @@ def add_dimensions(original_img_pixels,offset,bin_width,bin_height):
     return original_img_pixels,offset
 
 def add_data_size(original_img_pixels,offset,bin_payload_size):
-    original_img_pixels[offset]     = encode_to_pixel(original_img_pixels[offset],bin_payload_size[0:6])
-    original_img_pixels[offset+1]   = encode_to_pixel(original_img_pixels[offset+1],bin_payload_size[6:12])
-    original_img_pixels[offset+2]   = encode_to_pixel(original_img_pixels[offset+2],bin_payload_size[12:18])
-    original_img_pixels[offset+3]   = encode_to_pixel(original_img_pixels[offset+3],bin_payload_size[18:24])
-    original_img_pixels[offset+4]   = encode_to_pixel(original_img_pixels[offset+4],bin_payload_size[24:27])
+    original_img_pixels[offset]   = encode_to_pixel(original_img_pixels[offset],bin_payload_size[0:6])
+    original_img_pixels[offset+1] = encode_to_pixel(original_img_pixels[offset+1],bin_payload_size[6:12])
+    original_img_pixels[offset+2] = encode_to_pixel(original_img_pixels[offset+2],bin_payload_size[12:18])
+    original_img_pixels[offset+3] = encode_to_pixel(original_img_pixels[offset+3],bin_payload_size[18:24])
+    original_img_pixels[offset+4] = encode_to_pixel(original_img_pixels[offset+4],bin_payload_size[24:27])
     
     offset += 5
     return original_img_pixels,offset
 
 def add_header(original_img_pixels,payload_dimensions,
                num_payload_pixels,num_flag_pixels=2):
-    
-    # offset = 0
     
     #FLAG-> All even
     for i in range(num_flag_pixels):
@@ -107,3 +105,17 @@ def encode_data(original_pixel,half_img_pixel):
     b += b1
     
     return (r,g,b)
+
+def check_FLAG(img_pixel_data,num_flag_pixels=2):
+    for i in range(num_flag_pixels):
+        for component in img_pixel_data[i]:
+            if component%2 != 0:
+                return False
+    return True
+
+def get_dimensions(img_pixel_data,width_pixels,height_pixels,offset):
+    pass
+
+def get_size(img_pixel_data,img_size_pixels,offset):
+    pass
+                

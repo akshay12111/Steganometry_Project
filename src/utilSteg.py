@@ -17,3 +17,6 @@ def pair(iterable):
 
 def split_byte(byte_value):
     return [byte_value[0:4],byte_value[4:8]]
+
+def get_pixel_MSB(pix1,pix2):
+    pass
