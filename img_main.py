@@ -1,5 +1,5 @@
-from src.ac_ISteg import HideData as Hide
-from src.ac_ISteg import ExtractData as Extract
+from src.ImgSteg import HideData as Hide
+from src.ImgSteg import ExtractData as Extract
 
 Hide()
 Extract()
