@@ -1,6 +1,6 @@
-from src.acSteg import HideData as Hide
-from src.acSteg import ExtractData as Extract
-from src.acSteg import ExtractDataTo
+from src.TxtSteg import HideData as Hide
+from src.TxtSteg import ExtractData as Extract
+from src.TxtSteg import ExtractDataTo
 
 message = '''Cicada 3301 is a nickname given to an alleged enigmatic organization that posted three sets of puzzles online between 2012 and 2014.
 The first Internet puzzle started on January 4, 2012, on 4chan and ran for nearly a month. A second round began one year later on 
