@@ -1,4 +1,6 @@
 from src.utilSteg import *
+FLAG = '00000000'
+
 
 def pixel_to_bin(pixel):
     r,g,b = pixel 
