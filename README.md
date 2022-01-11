@@ -16,5 +16,5 @@
 
 ## Installation
 ```sh
-git clone "https://github.com/chinmaypant21/Steganography_py.git"
+git clone "https://github.com/akshay12111/Steganometry_Project.git"
 ```
