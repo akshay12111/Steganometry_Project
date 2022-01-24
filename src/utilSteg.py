@@ -14,7 +14,7 @@ def msg_to_binary(msg: str) -> list:
 def is_encodable(original_img_pixels: list, data: list, num_header_pixels: int = 0) -> bool:
     '''
     This function checks if the given image
-    data can be used to hide text or not.
+    data can be used to hide text or not
     ----------
     original_img_pixels: list of pixels(tuple) where each pixel has r,g,b (int) value (0<=value<=255)
     data: list of binary strings of given data (message)

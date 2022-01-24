@@ -1,5 +1,10 @@
 #Both height and width will use 3 pixels 222222111
-def encode_to_pixel(pixel,bin_pixel_data):
+
+def encode_to_pixel(pixel: tuple,bin_pixel_data: str) -> tuple:
+    '''
+    This functions encodes pixel data from the secret image to the main image
+    ---------
+    '''
     r,g,b = pixel
     shift = len(bin_pixel_data)//3
     
@@ -23,7 +28,6 @@ def encode_to_pixel(pixel,bin_pixel_data):
     return (r,g,b)
 
 def add_dimensions(original_img_pixels,offset,bin_width,bin_height):
-    # print("in dim---------------------------------")
     original_img_pixels[offset]   = encode_to_pixel(original_img_pixels[offset],bin_width[0:6])
     original_img_pixels[offset+1] = encode_to_pixel(original_img_pixels[offset+1],bin_width[6:12])
     original_img_pixels[offset+2] = encode_to_pixel(original_img_pixels[offset+2],bin_width[12:15])

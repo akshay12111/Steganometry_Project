@@ -58,7 +58,7 @@ def HideData(image_path='media/sierra.jpg',message=""):
     except:
         print("Unable to open image")
         exit(0)
-    original_pixel_data = list(original_image.getdata())
+    original_pixel_data = list(original_image.aaodata())
     msg_bytes = [FLAG] + msg_to_binary(message) + [FLAG]
     
     if is_encodable(original_pixel_data,msg_bytes):
